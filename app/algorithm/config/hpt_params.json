@@ -2,7 +2,7 @@
   {
     "name": "penalty",
     "short_desc": "The norm of the penalty - one of l1, l2, elasticnet, or none",
-    "default": "l2",
+    "default": "elasticnet",
     "type": "categorical",
     "categorical_vals": ["l1", "l2", "elasticnet", "none"],
     "run_HPO": true
@@ -10,7 +10,7 @@
   {
     "name": "C",
     "short_desc": "Inverse of regularization strength; must be a positive float. Like in support vector machines, smaller values specify stronger regularization.",
-    "default": 0.5,
+    "default": 1.0,
     "type": "real",
     "search_type": "uniform",
     "range_low": 1e-6,

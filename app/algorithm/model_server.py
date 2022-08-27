@@ -12,8 +12,9 @@ model_cfg = utils.get_model_config()
 
 
 class ModelServer:
-    def __init__(self, model_path): 
+    def __init__(self, model_path, data_schema): 
         self.model_path = model_path
+        self.data_schema = data_schema
         
     
     def _get_preprocessor(self): 
@@ -35,7 +36,7 @@ class ModelServer:
     
         
     
-    def predict(self, data, data_schema):  
+    def predict(self, data):  
         
         preprocessor = self._get_preprocessor()
         model = self._get_model()
@@ -52,26 +53,26 @@ class ModelServer:
         # inverse transform the predictions to original scale
         preds = pipeline.get_inverse_transform_on_preds(preprocessor, model_cfg, preds)        
         # get the names for the id and prediction fields
-        id_field_name = data_schema["inputDatasets"]["binaryClassificationBaseMainInput"]["idField"]  
+        id_field_name = self.data_schema["inputDatasets"]["binaryClassificationBaseMainInput"]["idField"]  
         # return the prediction df with the id and class probability fields
         preds_df = data[[id_field_name]].copy()
         preds_df['prediction'] = preds   
         
         return preds_df
 
-    def predict_proba(self, data, data_schema):
-        preds = self._get_predictions(data, data_schema)
+    def predict_proba(self, data):
+        preds = self._get_predictions(data)
         # get class names (labels)
         class_names = pipeline.get_class_names(self.preprocessor, model_cfg)
         # get the name for the id field
-        id_field_name = data_schema["inputDatasets"]["binaryClassificationBaseMainInput"]["idField"]
+        id_field_name = self.data_schema["inputDatasets"]["binaryClassificationBaseMainInput"]["idField"]
         # return te prediction df with the id and class probability fields
         preds_df = data[[id_field_name]].copy()
         preds_df[class_names[0]] = 1 - preds
         preds_df[class_names[-1]] = preds
         return preds_df
 
-    def _get_predictions(self, data, data_schema):
+    def _get_predictions(self, data):
         preprocessor = self._get_preprocessor()
         model = self._get_model()
         if preprocessor is None:  raise Exception("No preprocessor found. Did you train first?")

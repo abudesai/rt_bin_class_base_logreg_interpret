@@ -11,17 +11,17 @@ from interpret.glassbox import LogisticRegression
 
 
 model_fname = "model.save"
-model_fname = "model.save"
 global_explanations_fname = "global_explanations.csv"
 global_explanations_chart_fname = "global_explanations.png"
-MODEL_NAME = "Logreg_interpret"
+
+MODEL_NAME = "bin_class_base_log_reg_interpret"
 
 COST_THRESHOLD = float('inf')
 
 
 class Classifier(): 
     
-    def __init__(self, feature_names, penalty, C, l1_ratio) -> None:
+    def __init__(self, feature_names, penalty = "elasticnet", C = 1.0, l1_ratio=0.5, **kwargs) -> None:
         self.feature_names = feature_names
         self.penalty = penalty  
         self.C = C  
@@ -29,8 +29,7 @@ class Classifier():
         self.model = self.build_model()     
         
         
-    def build_model(self, **kwargs): 
-
+    def build_model(self): 
         #This is the Logisitc Regression from the interpret package, not from Sklearn
         model = LogisticRegression(
             feature_names = self.feature_names, 
@@ -50,9 +49,6 @@ class Classifier():
         
     def explain_global(self, name): 
         return self.model.explain_global(name=name)
-    
-    def explain_global(self, name): 
-        return self.model.explain_global(name=name)
 
     def predict(self, X, verbose=False): 
         preds = self.model.predict(X)
@@ -70,7 +66,7 @@ class Classifier():
 
     
     def save(self, model_path): 
-        joblib.dump(self.model, os.path.join(model_path, model_fname))
+        joblib.dump(self, os.path.join(model_path, model_fname))
         self._save_global_explanations(model_path=model_path)
         
 
