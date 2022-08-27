@@ -27,7 +27,7 @@ data_schema = utils.get_data_schema(data_schema_path)
 
 
 # initialize your model here before the app can handle requests
-model_server = ModelServer(model_path = model_path)
+model_server = ModelServer(model_path = model_path, data_schema = data_schema)
 
 
 # The flask app for serving predictions
@@ -66,7 +66,7 @@ def infer():
 
     # Do the prediction
     try: 
-        predictions = model_server.predict(data, data_schema)
+        predictions = model_server.predict(data)
         # Convert from dataframe to CSV
         out = io.StringIO()
         predictions.to_csv(out, index=False)
