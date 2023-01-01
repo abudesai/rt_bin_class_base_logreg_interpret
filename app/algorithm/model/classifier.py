@@ -50,6 +50,10 @@ class Classifier():
     def explain_global(self, name): 
         return self.model.explain_global(name=name)
 
+    def predict_proba(self, X, verbose=False): 
+        preds = self.model.predict_proba(X)
+        return preds 
+
     def predict(self, X, verbose=False): 
         preds = self.model.predict(X)
         return preds 
@@ -87,8 +91,8 @@ class Classifier():
 
     @classmethod
     def load(cls, model_path): 
-        logreg_classifier = joblib.load(os.path.join(model_path, model_fname))
-        return logreg_classifier
+        model = joblib.load(os.path.join(model_path, model_fname))
+        return model
 
 
 def save_model(model, model_path):    
@@ -96,11 +100,7 @@ def save_model(model, model_path):
     
 
 def load_model(model_path): 
-    try: 
-        model = Classifier.load(model_path)        
-    except: 
-        raise Exception(f'''Error loading the trained {MODEL_NAME} model. 
-            Do you have the right trained model in path: {model_path}?''')
+    model = Classifier.load(model_path)  
     return model
 
 
